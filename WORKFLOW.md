@@ -1,0 +1,91 @@
+# Task Planner - High Level Workflow & Architecture
+
+## Overview
+The **Task Planner** is a React-based application designed to help users manage their tasks. The application currently follows a Component-Based Architecture with plans for an MVC (Model-View-Controller) pattern integration.
+
+## Component Hierarchy & Flow
+
+The application structure flows from the entry point down to individual UI components:
+
+```mermaid
+graph TD
+    Entry[main.jsx] --> App[App.jsx]
+    App --> Shell[AppShell.jsx]
+    
+    subgraph "Main Layout (AppShell)"
+        Shell --> Header[Header / Theme Toggle]
+        Shell --> Content[Main Content Area]
+        
+        Content --> Input[TaskInputView]
+        Content --> List[TaskListView]
+    end
+    
+    List --> Item[TaskItemView]
+```
+
+### 1. Application Entry
+- **`src/App.jsx`**: The root component. It simply renders the `AppShell`.
+- **`src/views/AppShell.jsx`**: Acts as the main layout container.
+    - **Responsibilities**:
+        - Manages Global State: Handles the Application Theme (`light` / `dark`).
+        - Structure: Renders the Header (Logo, Date, Theme Toggle) and the Main App container.
+        - Composition: Orchestrates the `TaskInputView` and `TaskListView`.
+
+### 2. Task Creation Flow (Input)
+- **`src/views/TaskInputView.jsx`**:
+    - Displays the input form for creating new tasks.
+    - **Inputs**: Task Title (Text), Priority (Radio Select), Date.
+    - **Current State**: UI Only. The logic to handle form submission will be injected via props (Controller layer) in the future.
+
+### 3. Task Display Flow (List)
+- **`src/views/TaskListView.jsx`**:
+    - Displays the list of tasks.
+    - **Current State**: Uses **Mock Data** (`mockTasks`) to render the UI.
+    - **Responsibilities**: Renders a list of `TaskItemView` components based on the data provided.
+    
+- **`src/views/TaskItemView.jsx`**:
+    - Represents a single task card.
+    - **Props**: Receives a `task` object containing `{ id, title, priority, isCompleted, dueDate }`.
+    - **Visuals**: Displays task details and status specific styling (e.g., strikethrough for completed tasks).
+
+## Data Flow (Current vs Future)
+
+- **Current (UI Phase)**: 
+    - Data is static and hardcoded within `TaskListView.jsx`.
+    - State is local to components (e.g., `theme` in `AppShell`).
+    
+- **Future (MVC Integration)**:
+    - **Models**: Will handle data logic and storage (e.g., LocalStorage, Database).
+    - **Controllers**: Will mediate between Views and Models, passing handlers (like `onAddTask`) down to Views.
+
+
+## User Interaction Workflow
+
+The following diagrams illustrate the core user interactions within the application.
+
+### 1. Adding a New Task
+This flow represents how a user adds a new task to the list.
+
+```mermaid
+flowchart TD
+    Start([User starts]) --> Input[Enter Title, Priority, Date]
+    Input --> ClickAdd{Click 'Add' Button}
+    
+    ClickAdd -->|Triggers| Handler[onAddTask Handler]
+    Handler --> State[Update App State]
+    State --> Render[Re-render Task List]
+    Render --> End([User sees new task])
+```
+
+### 2. Marking Task as Complete
+This flow represents how a user marks a task as done.
+
+```mermaid
+flowchart TD
+    Start([User sees task]) --> Click[Click Checkbox]
+    Click -->|Triggers| Toggle[onToggle Handler]
+    Toggle --> State[Update App State]
+    State --> Render[Re-render Item]
+    Render --> End([Task shows strikethrough])
+```
+

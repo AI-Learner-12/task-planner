@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Planner - Architecture</title>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
+    <style>
+        body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 15px;
+            }
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body class="markdown-body">
+    <div id="content"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+        const markdownContent = `# Task Planner - System Architecture
+
+This document communicates the high-level architecture and component interactions of the Task Planner application.
+
+## High-Level Architecture
+
+The application follows a **Single Page Application (SPA)** architecture built with **React**.
+
+\`\`\`mermaid
+graph TD
+    Client[User Browser]
+    
+    subgraph "Application Scope (SPA)"
+        Entry[Entry Point (main.jsx)]
+        Router[Component Tree / Routing]
+        State[Local State Management]
+    end
+    
+    Client <-->|Interacts| Entry
+    Entry --> Router
+    Router <-->|Reads/Writes| State
+\`\`\`
+
+## Component Architecture
+
+Detailed breakdown of the React component hierarchy and responsibilities.
+
+\`\`\`mermaid
+classDiagram
+    class App {
+        +render()
+    }
+    class AppShell {
+        -theme: string
+        +toggleTheme()
+    }
+    class Header {
+        +displayDate()
+    }
+    class TaskInputView {
+        +renderInput()
+        +renderPrioritySelector()
+    }
+    class TaskListView {
+        +renderList()
+    }
+    class TaskItemView {
+        +toggleComplete()
+        +displayDetails()
+    }
+
+    App *-- AppShell
+    AppShell *-- Header
+    AppShell *-- TaskInputView
+    AppShell *-- TaskListView
+    TaskListView *-- "n" TaskItemView
+\`\`\`
+
+## Data Flow (MVC Pattern Plan)
+
+Future state architecture for integrating Model-View-Controller pattern.
+
+\`\`\`mermaid
+graph LR
+    User((User))
+    
+    subgraph "View Layer (React)"
+        Input[TaskInputView]
+        List[TaskListView]
+    end
+    
+    subgraph "Controller Layer"
+        Ctrl[TaskController]
+    end
+    
+    subgraph "Model Layer"
+        Store[TaskStore / LocalStorage]
+    end
+    
+    User -->|Action| Input
+    Input -->|EventHandler| Ctrl
+    Ctrl -->|Update| Store
+    Store -->|Notify| Ctrl
+    Ctrl -->|Props| List
+    List -->|Display| User
+\`\`\`
+`;
+
+        // Custom Renderer to handle Mermaid blocks
+        const renderer = new marked.Renderer();
+        const originalCodeRenderer = renderer.code.bind(renderer);
+
+        renderer.code = (code, language) => {
+            if (language === 'mermaid') {
+                return `<pre class="mermaid">\${code}</pre>`;
+            }
+            return originalCodeRenderer(code, language);
+        };
+
+        marked.use({ renderer });
+
+        // Render Markdown
+        document.getElementById('content').innerHTML = marked.parse(markdownContent);
+
+        // Initialize Mermaid
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+
+</html>

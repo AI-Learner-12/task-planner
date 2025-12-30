@@ -1,0 +1,104 @@
+/* Font: Outfit */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Colorful Pastel Theme Palette (Default is Light/Colorful now) */
+  --bg-app: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  /* Fallback */
+
+  /* Slate 800 - Keeping dark variables for toggle */
+  --bg-card: #ffffff;
+  --bg-input: #f1f5f9;
+
+  --text-primary: #334155;
+  --text-secondary: #64748b;
+
+  --primary: #f43f5e;
+  /* Rose 500 */
+  --primary-hover: #e11d48;
+  /* Rose 600 */
+  --accent: #8b5cf6;
+  /* Violet 500 */
+
+  --danger: #ef4444;
+  --success: #10b981;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+  /* Colorful shadow effect comes from components */
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+
+  --font-main: 'Outfit', sans-serif;
+}
+
+/* Dark Theme Overrides */
+[data-theme='dark'] {
+  --bg-app: #0f172a;
+  --bg-card: #1e293b;
+  --bg-input: #334155;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+
+  --primary: #6366f1;
+  /* Indigo 500 */
+  --primary-hover: #4f46e5;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+}
+
+/* Light Theme Specific Body Background */
+[data-theme='light'] body {
+  background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+  /* Warm Peach Gradient */
+  background: linear-gradient(135deg, #FFF6B7 10%, #F6416C 100%);
+  /* Example Vibrant */
+  background: linear-gradient(to top, #dfe9f3 0%, white 100%);
+  /* Clean */
+  background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+  /* Pastel Purple/Pink */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#root {
+  width: 100%;
+  max-width: 600px;
+  /* Mobile-first constraint for desktop view */
+  padding: 20px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-main);
+  transition: all 0.2s ease;
+}
+
+input,
+textarea {
+  font-family: var(--font-main);
+  outline: none;
+}
