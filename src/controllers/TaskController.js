@@ -44,6 +44,14 @@ export const useTaskController = () => {
                 createdAt: newTaskDB.created_at
             };
             setTasks(prev => [newTaskUI, ...prev]);
+
+            // Trigger SMS Notification
+            fetch('/api/send-sms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ taskTitle: newTaskDB.title })
+            }).catch(err => console.error("SMS Trigger Failed:", err)); // Non-blocking
+
         } catch (error) {
             console.error("Error adding task:", error);
             alert("Failed to save task to cloud.");
