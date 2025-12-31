@@ -1,26 +1,67 @@
-const STORAGE_KEY = 'task-planner-data';
+import { supabase } from '../lib/supabase';
 
 export const TaskModel = {
-    // Fetch all tasks from storage
-    fetchAll: () => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        return saved ? JSON.parse(saved) : [];
+    // Fetch all tasks from Supabase
+    fetchAll: async () => {
+        const { data, error } = await supabase
+            .from('tasks')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data || [];
     },
 
-    // Save tasks to storage
-    saveAll: (tasks) => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    // Create a new task
+    create: async (task) => {
+        const { data, error } = await supabase
+            .from('tasks')
+            .insert([{
+                title: task.title,
+                priority: task.priority,
+                due_date: task.dueDate, // Maps to snake_case column
+                is_completed: false
+            }])
+            .select() // Return the created object
+            .single();
+
+        if (error) throw error;
+        return data; // Returns the task with real ID from DB
     },
 
-    // Create a new task entity
-    create: ({ title, priority, dueDate }) => {
-        return {
-            id: Date.now().toString(),
-            title,
-            priority,
-            dueDate,
-            isCompleted: false,
-            createdAt: new Date().toISOString()
-        };
+    // Toggle Task Completion
+    toggle: async (id, isCompleted) => {
+        const { error } = await supabase
+            .from('tasks')
+            .update({ is_completed: isCompleted })
+            .eq('id', id);
+
+        if (error) throw error;
+    },
+
+    // Update Task Details
+    update: async (id, updates) => {
+        // Map camelCase to snake_case if needed
+        const payload = {};
+        if (updates.title) payload.title = updates.title;
+        if (updates.priority) payload.priority = updates.priority;
+        if (updates.dueDate) payload.due_date = updates.dueDate;
+
+        const { error } = await supabase
+            .from('tasks')
+            .update(payload)
+            .eq('id', id);
+
+        if (error) throw error;
+    },
+
+    // Delete Task
+    delete: async (id) => {
+        const { error } = await supabase
+            .from('tasks')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
     }
 };
